@@ -39,11 +39,6 @@ namespace WebApi.Controllers
         [ResponseType(typeof(void))]
         public IHttpActionResult PutPessoa(int id, Pessoa pessoa)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             if (id != pessoa.Id)
             {
                 return BadRequest();
@@ -74,11 +69,6 @@ namespace WebApi.Controllers
         [ResponseType(typeof(Pessoa))]
         public IHttpActionResult PostPessoa(Pessoa pessoa)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             db.Pessoas.Add(pessoa);
             db.SaveChanges();
 

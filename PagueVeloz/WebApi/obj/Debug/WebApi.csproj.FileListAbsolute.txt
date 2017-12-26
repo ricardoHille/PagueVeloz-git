@@ -61,3 +61,5 @@ C:\PagueVeloz-git\PagueVeloz\WebApi\bin\Antlr3.Runtime.pdb
 C:\PagueVeloz-git\PagueVeloz\WebApi\obj\Debug\WebApi.csprojResolveAssemblyReference.cache
 C:\PagueVeloz-git\PagueVeloz\WebApi\obj\Debug\WebApi.dll
 C:\PagueVeloz-git\PagueVeloz\WebApi\obj\Debug\WebApi.pdb
+C:\PagueVeloz-git\PagueVeloz\WebApi\obj\Debug\WebApi.Migrations.Initial.resources
+C:\PagueVeloz-git\PagueVeloz\WebApi\obj\Debug\WebApi.csproj.GenerateResource.Cache

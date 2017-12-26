@@ -51,3 +51,5 @@ C:\PagueVeloz-git\PagueVeloz\MVC\bin\Newtonsoft.Json.xml
 C:\PagueVeloz-git\PagueVeloz\MVC\obj\Debug\MVC.csprojResolveAssemblyReference.cache
 C:\PagueVeloz-git\PagueVeloz\MVC\obj\Debug\MVC.dll
 C:\PagueVeloz-git\PagueVeloz\MVC\obj\Debug\MVC.pdb
+C:\PagueVeloz-git\PagueVeloz\MVC\bin\System.Net.Http.Formatting.dll
+C:\PagueVeloz-git\PagueVeloz\MVC\bin\System.Net.Http.Formatting.xml
