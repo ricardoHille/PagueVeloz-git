@@ -1,4 +1,5 @@
 ﻿using MVC.Models;
+using MVC.Models.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,12 @@ namespace MVC.Controllers
         [HttpPost]
         public ActionResult Create(MvcPessoa pessoa)
         {
+            string msgErro = "";
+            if (!CanCadastrar(pessoa, ref msgErro))
+            {
+                TempData["ErrorCreate"] = msgErro;
+            }
+
             pessoa.DataCadastro = DateTime.Now;
             HttpResponseMessage response = VariaveisGlobal.WebApiClient.PostAsJsonAsync("Pessoas", pessoa).Result;
             return RedirectToAction("Index");
@@ -67,6 +74,49 @@ namespace MVC.Controllers
         {
             HttpResponseMessage response = VariaveisGlobal.WebApiClient.DeleteAsync("Pessoas/" + id.ToString()).Result;
             return RedirectToAction("Index");
+        }
+
+
+        private bool CanCadastrar(MvcPessoa pessoa, ref string mensagemErro)
+        {
+            if (VariaveisGlobal.idEstado == EnumEstado.SantaCatarina)
+            {
+                return String.IsNullOrEmpty(pessoa.RG);
+            }
+            else if (VariaveisGlobal.idEstado == EnumEstado.Parana)
+            {
+                mensagemErro = "É necessário ser maior de idade para se cadastrar";
+                return EhMaiorDeIdade(pessoa.DataNascimento);
+            }
+
+            return true;
+        }
+
+        private bool EhMaiorDeIdade(DateTime dataNascimento)
+        {
+            int AnoBase = DateTime.Today.Year - 18;
+            if (dataNascimento.Year < AnoBase)
+            {
+                return true;
+            }
+
+            if (AnoBase == dataNascimento.Year)
+            {
+                if (dataNascimento.Month < DateTime.Now.Month)
+                {
+                    return true;
+                }
+
+                if(dataNascimento.Month == DateTime.Now.Month)
+                {
+                    if(dataNascimento.Day <= DateTime.Now.Day)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

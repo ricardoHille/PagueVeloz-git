@@ -53,3 +53,4 @@ C:\PagueVeloz-git\PagueVeloz\MVC\obj\Debug\MVC.dll
 C:\PagueVeloz-git\PagueVeloz\MVC\obj\Debug\MVC.pdb
 C:\PagueVeloz-git\PagueVeloz\MVC\bin\System.Net.Http.Formatting.dll
 C:\PagueVeloz-git\PagueVeloz\MVC\bin\System.Net.Http.Formatting.xml
+C:\PagueVeloz-git\PagueVeloz\MVC\obj\Debug\MVC.csproj.CoreCompileInputs.cache
