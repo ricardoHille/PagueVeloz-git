@@ -17,6 +17,10 @@
                     <span class="icon-bar"></span>
                 </button>
                 @Html.ActionLink("PagueVeloz", "Index", "Pessoa", new { area = "" }, new { @class = "navbar-brand" })
+                <select onchange="selecionarEstado()">
+                    <option value="1">Santa Catarina</option>
+                    <option value="2">Paraná</option>
+                </select>
             </div>
         </div>
     </div>
