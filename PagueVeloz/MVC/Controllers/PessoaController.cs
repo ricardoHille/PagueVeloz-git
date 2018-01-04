@@ -1,5 +1,4 @@
 ﻿using MVC.Models;
-using MVC.Models.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +21,6 @@ namespace MVC.Controllers
             HttpResponseMessage response = VariaveisGlobal.WebApiClient.GetAsync("Pessoas").Result;
 
             listPessoa = response.Content.ReadAsAsync<IEnumerable<MvcPessoa>>().Result;
-
-
-            ViewBag.Estado = new SelectList(new List<string> { "Santa Catarina", "Paraná" }, "Estado", "Nome");
 
             return View(listPessoa);
         }
@@ -51,7 +47,7 @@ namespace MVC.Controllers
 
         public ActionResult Edit(int id)
         {
-            HttpResponseMessage response = VariaveisGlobal.WebApiClient.GetAsync("Pessoas/"+id.ToString()).Result;
+            HttpResponseMessage response = VariaveisGlobal.WebApiClient.GetAsync("Pessoas/" + id.ToString()).Result;
 
             var pessoaModel = response.Content.ReadAsAsync<MvcPessoa>().Result;
 
@@ -65,11 +61,11 @@ namespace MVC.Controllers
             var pessoaModel = response.Content.ReadAsAsync<MvcPessoa>().Result;
             pessoa.DataCadastro = pessoaModel.DataCadastro;
 
-            response = VariaveisGlobal.WebApiClient.PutAsJsonAsync("Pessoas/"+pessoa.Id.ToString(), pessoa).Result;
+            response = VariaveisGlobal.WebApiClient.PutAsJsonAsync("Pessoas/" + pessoa.Id.ToString(), pessoa).Result;
             return RedirectToAction("Index");
         }
 
-        
+
         public ActionResult Delete(int id)
         {
             HttpResponseMessage response = VariaveisGlobal.WebApiClient.DeleteAsync("Pessoas/" + id.ToString()).Result;
@@ -79,11 +75,14 @@ namespace MVC.Controllers
 
         private bool CanCadastrar(MvcPessoa pessoa, ref string mensagemErro)
         {
-            if (VariaveisGlobal.idEstado == EnumEstado.SantaCatarina)
+
+            string estado = (string) Session["estado"];
+
+            if (estado.Equals("SC"))
             {
                 return String.IsNullOrEmpty(pessoa.RG);
             }
-            else if (VariaveisGlobal.idEstado == EnumEstado.Parana)
+            else if (estado.Equals("PR"))
             {
                 mensagemErro = "É necessário ser maior de idade para se cadastrar";
                 return EhMaiorDeIdade(pessoa.DataNascimento);
@@ -107,9 +106,9 @@ namespace MVC.Controllers
                     return true;
                 }
 
-                if(dataNascimento.Month == DateTime.Now.Month)
+                if (dataNascimento.Month == DateTime.Now.Month)
                 {
-                    if(dataNascimento.Day <= DateTime.Now.Day)
+                    if (dataNascimento.Day <= DateTime.Now.Day)
                     {
                         return true;
                     }
@@ -117,6 +116,23 @@ namespace MVC.Controllers
             }
 
             return false;
+        }
+
+        [HttpPost]
+        public ActionResult SetEstado(MvcEstado estado)
+        {
+            Session["estado"] = estado.Estado;
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult Search(MvcPessoa pessoaFiltro)
+        {
+            HttpResponseMessage response = VariaveisGlobal.WebApiClient.PostAsJsonAsync("Search",pessoaFiltro).Result;
+
+            IEnumerable<MvcPessoa> listPessoa = response.Content.ReadAsAsync<IEnumerable<MvcPessoa>>().Result;
+
+            return View(listPessoa);
         }
     }
 }

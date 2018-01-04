@@ -158,8 +158,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Enum\EnumEstado.cs" />
+    <Compile Include="Models\MvcEstado.cs" />
     <Compile Include="Models\MvcPessoa.cs" />
+    <Compile Include="Models\MvcPessoaFiltro.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VariaveisGlobal.cs" />
   </ItemGroup>
@@ -224,6 +225,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\SetEstadoAtual\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -16,9 +16,27 @@
     white-space: normal;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+.form-estado {
+    display: inline-flex;
+    align-items: center;
+ 
+}
+
+.form-estado select {
+    padding: 5px 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    outline: 0;
+}
+
+.form-estado button {
+    margin-left: 5px;
+    background: gray;
+    color: #fafafa;
+    border: 1px solid #fafafa;
+    border-radius: 4px;
+    padding: 5px 10px;
+    margin-top: 10px;
 }
