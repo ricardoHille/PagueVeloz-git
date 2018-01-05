@@ -6,6 +6,7 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -17,10 +18,10 @@
                     <span class="icon-bar"></span>
                 </button>
                 @Html.ActionLink("PagueVeloz", "Index", "Pessoa", new { area = "" }, new { @class = "navbar-brand" })
-                <form method="POST" action="@Url.Action("SetEstado", "Pessoa")" class="form-estado">
-                    <select name="estado">
-                        <option value="SC">Santa Catarina</option>
-                        <option value="PR">Paraná</option>
+                <form method="get" action="@Url.Action("SetEstado", "Pessoa")" class="form-estado">
+                    <select name="estado" id="comboEstado">
+                        <option @((string)Session["estado"] == "SC" ? "selected" : "") value="SC">Santa Catarina</option>
+                        <option @((string)Session["estado"] == "PR" ? "selected" : "") value="PR">Paraná</option>
                     </select>
                     <button type="submit">Selecionar</button>
                 </form>

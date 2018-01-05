@@ -1,16 +1,10 @@
 ﻿@model IEnumerable<MVC.Models.MvcPessoa>
 
 @{
-    ViewBag.Title = "Cadastro Pessoa";
+    ViewBag.Title = "Pague Veloz - Teste";
 }
-
-<h2>Cadastro Pessoa</h2>
-
-<p>
-    @Html.ActionLink("Cadastrar Pessoa", "Create")
-</p>
-
-<form method="get" action="@Url.Action("Search", "Pessoa")">
+<br />
+<form method="get" action="@Url.Action("Index", "Pessoa")">
     <fieldset>
         <legend>Filtrar pessoas</legend>
         <div class="row">
@@ -21,58 +15,62 @@
                 </div>
             </div>
         </div>
-        <!--<div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label">Data Nascimento (Início)</label>
-                <input type="date" name="dataNascimentoInicio" value="" class="form-control" />
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Data Nascimento (Início)</label>
+                    <input type="date" name="dataNascimentoInicio" value="" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Data Nascimento (Fim)</label>
+                    <input type="date" name="dataNascimentoFim" value="" class="form-control" />
+                </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label">Data Nascimento (Fim)</label>
-                <input type="date" name="dataNascimentoFim" value="" class="form-control" />
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Data Cadastro (Início)</label>
+                    <input type="date" name="dataCadastroInicio" value="" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Data Cadastro (Fim)</label>
+                    <input type="date" name="dataCadastroFim" value="" class="form-control" />
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label">Data Cadastro (Início)</label>
-                <input type="date" name="dataCadastroInicio" value="" class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label">Data Cadastro (Fim)</label>
-                <input type="date" name="dataCadastroFim" value="" class="form-control" />
-            </div>
-        </div>
-    </div>-->
         <button type="submit" class="btn btn-primary">Pesquisar</button>
         <button type="reset" class="btn btn-info">Limpar</button>
     </fieldset>
 </form>
 <br />
+<p>
+    @Html.ActionLink("Cadastrar Pessoa", "Create")
+</p>
+<br />
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Nome)
+            Nome
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.CPF)
+            CPF
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.DataNascimento)
+            Data Nascimento
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.DataCadastro)
+            Data Cadastro
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Telefones)
+            Telefones
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.RG)
+            RG
         </th>
         <th></th>
     </tr>
@@ -106,3 +104,14 @@
     }
 
 </table>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(function () {
+            if ('@Session["MsgEstadoNaoPreenchido"]' != "") {
+                window.alert('@Session["MsgEstadoNaoPreenchido"]')
+            }
+        });
+
+    </script>
+}

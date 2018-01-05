@@ -14,19 +14,55 @@ namespace MVC.Controllers
         private const string _formCadastro = "formCadastro";
 
         // GET: Pessoa
-        public ActionResult Index()
+        public ActionResult Index(string nome="", DateTime? dataNascimentoInicio = null, DateTime? dataNascimentoFim = null, DateTime? dataCadastroInicio = null, DateTime? dataCadastroFim = null)
         {
+            LimparMensagensSessao();
             IEnumerable<MvcPessoa> listPessoa;
 
             HttpResponseMessage response = VariaveisGlobal.WebApiClient.GetAsync("Pessoas").Result;
 
             listPessoa = response.Content.ReadAsAsync<IEnumerable<MvcPessoa>>().Result;
 
+            if (!String.IsNullOrEmpty(nome))
+            {
+                listPessoa = listPessoa.Where<MvcPessoa>(x => x.Nome.Contains(nome)).ToList();
+            }
+
+            if(dataNascimentoInicio != null && dataNascimentoFim != null)
+            {
+                listPessoa = listPessoa.Where< MvcPessoa >(x => x.DataNascimento >= dataNascimentoInicio.Value && x.DataNascimento <= dataNascimentoFim.Value);
+            }
+            else
+            {
+                if (dataNascimentoInicio != null)
+                    listPessoa = listPessoa.Where<MvcPessoa>(x => x.DataNascimento.CompareTo(dataNascimentoInicio.Value) >= 0);
+            
+                if (dataNascimentoFim != null)
+                    listPessoa = listPessoa.Where<MvcPessoa>(x => x.DataNascimento.CompareTo(dataNascimentoFim.Value) <= 0);
+            }
+            
+            if (dataCadastroInicio != null && dataCadastroFim != null)
+            {
+                listPessoa = listPessoa.Where<MvcPessoa>(x => x.DataCadastro >= dataCadastroInicio.Value && x.DataCadastro <= dataCadastroFim.Value);
+            }
+            else
+            {
+                if (dataCadastroInicio != null)
+                    listPessoa = listPessoa.Where<MvcPessoa>(x => x.DataCadastro.CompareTo(dataCadastroInicio.Value) >= 0);
+            
+                if (dataCadastroFim != null)
+                    listPessoa = listPessoa.Where<MvcPessoa>(x => x.DataCadastro.CompareTo(dataCadastroFim.Value) <= 0);
+            }
+
             return View(listPessoa);
         }
 
         public ActionResult Create()
         {
+            if (!EstadoPreenchido())
+            {
+                return RedirectToAction("Index");
+            }
             var pessoaModel = new MvcPessoa();
             return View(_formCadastro, pessoaModel);
         }
@@ -34,10 +70,9 @@ namespace MVC.Controllers
         [HttpPost]
         public ActionResult Create(MvcPessoa pessoa)
         {
-            string msgErro = "";
-            if (!CanCadastrar(pessoa, ref msgErro))
+            if (!PodeRegistrarPessoa(pessoa))
             {
-                TempData["ErrorCreate"] = msgErro;
+                return View(_formCadastro, pessoa);
             }
 
             pessoa.DataCadastro = DateTime.Now;
@@ -47,6 +82,12 @@ namespace MVC.Controllers
 
         public ActionResult Edit(int id)
         {
+            
+            if (!EstadoPreenchido())
+            {
+                return RedirectToAction("Index");
+            }
+
             HttpResponseMessage response = VariaveisGlobal.WebApiClient.GetAsync("Pessoas/" + id.ToString()).Result;
 
             var pessoaModel = response.Content.ReadAsAsync<MvcPessoa>().Result;
@@ -57,6 +98,11 @@ namespace MVC.Controllers
         [HttpPost]
         public ActionResult Edit(MvcPessoa pessoa)
         {
+            if (!PodeRegistrarPessoa(pessoa))
+            {
+                return View(_formCadastro, pessoa);
+            }
+
             HttpResponseMessage response = VariaveisGlobal.WebApiClient.GetAsync("Pessoas/" + pessoa.Id.ToString()).Result;
             var pessoaModel = response.Content.ReadAsAsync<MvcPessoa>().Result;
             pessoa.DataCadastro = pessoaModel.DataCadastro;
@@ -73,19 +119,38 @@ namespace MVC.Controllers
         }
 
 
-        private bool CanCadastrar(MvcPessoa pessoa, ref string mensagemErro)
+        private bool PodeRegistrarPessoa(MvcPessoa pessoa)
         {
-
+            LimparMensagensSessao();
             string estado = (string) Session["estado"];
 
             if (estado.Equals("SC"))
             {
-                return String.IsNullOrEmpty(pessoa.RG);
+                if (String.IsNullOrEmpty(pessoa.RG))
+                {
+                    Session["MsgRGObrigatorio"] = "O campo RG é obrigátorio";
+                    return false;
+                }
             }
             else if (estado.Equals("PR"))
             {
-                mensagemErro = "É necessário ser maior de idade para se cadastrar";
-                return EhMaiorDeIdade(pessoa.DataNascimento);
+                if(!EhMaiorDeIdade(pessoa.DataNascimento))
+                {
+                    Session["MsgMaiorDeIdade"] = "Pessoa precisa ser maior de idade para se cadastrar";
+                    return false;
+                }
+            }
+
+            if (pessoa.CPF.Length < 14)
+            {
+                Session["MsgCPFInvalido"] = "CPF invalido, informe o cpf da seguinte forma: xxx.xxx.xxx-xx";
+                return false;
+            }
+
+            if (pessoa.Telefones.Length < 14)
+            {
+                Session["MsgTelefoneInvalido"] = "Telefone invalido, informe o telefone da seguinte forma: (xx)xxxxx-xxxx";
+                return false;
             }
 
             return true;
@@ -118,21 +183,31 @@ namespace MVC.Controllers
             return false;
         }
 
-        [HttpPost]
-        public ActionResult SetEstado(MvcEstado estado)
+        private bool EstadoPreenchido()
         {
-            Session["estado"] = estado.Estado;
+            if (String.IsNullOrEmpty((string)Session["estado"]))
+            {
+                Session["MsgEstadoNaoPreenchido"] = "Estado precisa ser selecionado";
+                return false;
+            }
 
+            return true;
+        }
+
+        [HttpGet]
+        public ActionResult SetEstado(string estado)
+        {
+            Session["estado"] = estado;
+            Session["MsgEstadoNaoPreenchido"] = "";
             return RedirectToAction("Index");
         }
 
-        public ActionResult Search(MvcPessoa pessoaFiltro)
+        private void LimparMensagensSessao()
         {
-            HttpResponseMessage response = VariaveisGlobal.WebApiClient.PostAsJsonAsync("Search",pessoaFiltro).Result;
-
-            IEnumerable<MvcPessoa> listPessoa = response.Content.ReadAsAsync<IEnumerable<MvcPessoa>>().Result;
-
-            return View(listPessoa);
+            Session["MsgRGObrigatorio"] = "";
+            Session["MsgMaiorDeIdade"] = "";
+            Session["MsgTelefoneInvalido"] = "";
+            Session["MsgCPFInvalido"] = "";
         }
     }
 }

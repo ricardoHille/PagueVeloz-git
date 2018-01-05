@@ -91,46 +91,6 @@ namespace WebApi.Controllers
             return Ok(pessoa);
         }
 
-        [ResponseType(typeof(Pessoa))]
-        [Route("Pessoas/Search")]
-        public IHttpActionResult Search(Pessoa pessoa)
-        {
-            List<Pessoa> pessoas = null;
-
-            if (!String.IsNullOrEmpty(pessoa.Nome))
-            {
-                pessoas = db.Pessoas.Where<Pessoa>(x => x.Nome.Contains(pessoa.Nome)).ToList();
-            }
-
-            return Ok(pessoas);
-
-            //if(dataNascimentoInicio != null && dataNascimentoFim != null)
-            //{
-            //    db.Pessoas.Where<Pessoa>(x => x.DataNascimento >= dataNascimentoInicio.Value && x.DataNascimento <= dataNascimentoFim.Value);
-            //}
-            //else
-            //{
-            //    if (dataNascimentoInicio != null)
-            //        db.Pessoas.Where<Pessoa>(x => x.DataNascimento.CompareTo(dataNascimentoInicio.Value) >= 0);
-            //
-            //    if (dataNascimentoFim != null)
-            //        db.Pessoas.Where<Pessoa>(x => x.DataNascimento.CompareTo(dataNascimentoFim.Value) <= 0);
-            //}
-            //
-            //if (dataCadastroInicio != null && dataCadastroFim != null)
-            //{
-            //    db.Pessoas.Where<Pessoa>(x => x.DataCadastro >= dataCadastroInicio.Value && x.DataCadastro <= dataCadastroFim.Value);
-            //}
-            //else
-            //{
-            //    if (dataCadastroInicio != null)
-            //        db.Pessoas.Where<Pessoa>(x => x.DataCadastro.CompareTo(dataCadastroInicio.Value) >= 0);
-            //
-            //    if (dataCadastroFim != null)
-            //        db.Pessoas.Where<Pessoa>(x => x.DataCadastro.CompareTo(dataCadastroFim.Value) <= 0);
-            //}
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
